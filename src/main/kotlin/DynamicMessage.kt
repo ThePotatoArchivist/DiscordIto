@@ -3,6 +3,7 @@ package archives.tater.discordito
 import dev.kord.core.Kord
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.entity.Member
 import dev.kord.core.event.interaction.ActionInteractionCreateEvent
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.core.event.interaction.InteractionCreateEvent
@@ -45,6 +46,14 @@ interface DynamicMessage<T> {
             on<ModalSubmitInteractionCreateEvent> {
                 onModal(getData(this))
             }
+        }
+    }
+
+    companion object {
+        fun InteractionCreateEvent.member() = interaction.user as? Member
+
+        fun MessageBuilder.invalid() {
+            content = "Invalid State"
         }
     }
 }

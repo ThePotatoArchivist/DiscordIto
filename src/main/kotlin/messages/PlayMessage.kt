@@ -2,6 +2,8 @@ package archives.tater.discordito.messages
 
 import archives.tater.discordito.COLORS
 import archives.tater.discordito.DynamicMessage
+import archives.tater.discordito.DynamicMessage.Companion.invalid
+import archives.tater.discordito.DynamicMessage.Companion.member
 import archives.tater.discordito.Game
 import archives.tater.discordito.Ref
 import dev.kord.common.entity.ButtonStyle
@@ -9,7 +11,6 @@ import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
-import dev.kord.core.entity.Member
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.core.event.interaction.ModalSubmitInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
@@ -23,7 +24,7 @@ object PlayMessage : DynamicMessage<Game?> {
         data: Game?,
         disable: Boolean
     ) {
-        if (data !is Game.Running) TODO()
+        if (data !is Game.Running) return invalid()
 
         embed {
             title = data.question
@@ -77,10 +78,11 @@ object PlayMessage : DynamicMessage<Game?> {
     }
 
     override suspend fun ComponentInteractionCreateEvent.onComponent(data: Ref<Game?>) {
+        val member = member() ?: return
+        val game = data.value as? Game.Running ?: return
+
         when (interaction.componentId) {
             "see-number" -> {
-                val member = interaction.user as? Member ?: TODO()
-                val game = data.value as? Game.Running ?: TODO()
                 val team = game.teams.find { member in it.members } ?: run {
                     interaction.respondEphemeral {
                         content = "You are not in the game"
@@ -103,13 +105,11 @@ object PlayMessage : DynamicMessage<Game?> {
                 return
             }
             "selected-entry" -> {
-                val game = data.value as? Game.Running ?: TODO()
-                if (this !is SelectMenuInteractionCreateEvent) TODO()
+                this as SelectMenuInteractionCreateEvent
                 game.selected = interaction.values.first().toInt()
             }
             "entry-up" -> {
-                val game = data.value as? Game.Running ?: TODO()
-                val selected = game.selected ?: TODO()
+                val selected = game.selected ?: return
                 if (selected < 1) {
                     interaction.deferPublicMessageUpdate()
                     return
@@ -120,8 +120,7 @@ object PlayMessage : DynamicMessage<Game?> {
                 game.selected = selected - 1
             }
             "entry-down" -> {
-                val game = data.value as? Game.Running ?: TODO()
-                val selected = game.selected ?: TODO()
+                val selected = game.selected ?: return
                 if (selected >= game.entries.size - 1) {
                     interaction.deferPublicMessageUpdate()
                     return
@@ -132,7 +131,6 @@ object PlayMessage : DynamicMessage<Game?> {
                 game.selected = selected + 1
             }
             "reveal" -> {
-                val game = data.value as? Game.Running ?: TODO()
                 update(data, disable = true)
                 data.value = game.toReveal()
                 RevealMessage.send(data)
@@ -146,9 +144,9 @@ object PlayMessage : DynamicMessage<Game?> {
 
     override suspend fun ModalSubmitInteractionCreateEvent.onModal(data: Ref<Game?>) {
         if (interaction.modalId != "set-word") return
-        val game = data.value as? Game.Running ?: TODO()
+        val game = data.value as? Game.Running ?: return
 
-        val member = interaction.user as? Member ?: TODO()
+        val member = member() ?: return
         val team = game.teams.find { member in it.members } ?: run {
             interaction.respondEphemeral {
                 content = "You are not in the game"

@@ -2,14 +2,14 @@ package archives.tater.discordito.messages
 
 import archives.tater.discordito.COLORS
 import archives.tater.discordito.DynamicMessage
+import archives.tater.discordito.DynamicMessage.Companion.invalid
+import archives.tater.discordito.DynamicMessage.Companion.member
 import archives.tater.discordito.Game
 import archives.tater.discordito.Ref
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.core.behavior.interaction.modal
-import dev.kord.core.behavior.interaction.respondEphemeral
-import dev.kord.core.entity.Member
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.core.event.interaction.ModalSubmitInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
@@ -20,7 +20,7 @@ import dev.kord.rest.builder.message.embed
 
 object StartMessage : DynamicMessage<Game?> {
     override fun MessageBuilder.init(data: Game?, disable: Boolean) {
-        if (data !is Game.Starting) TODO()
+        if (data !is Game.Starting) return invalid()
 
         embed {
             title = "Ito"
@@ -56,7 +56,7 @@ object StartMessage : DynamicMessage<Game?> {
             }
             interactionButton(ButtonStyle.Primary, "start") {
                 label = "Start"
-                disabled = disable || data.question == null || data.teams.size < 2 // TODO 2
+                disabled = disable || data.question == null || data.teams.size < 2
             }
             interactionButton(ButtonStyle.Danger, "cancel") {
                 label = "Cancel"
@@ -66,32 +66,23 @@ object StartMessage : DynamicMessage<Game?> {
     }
 
     override suspend fun ComponentInteractionCreateEvent.onComponent(data: Ref<Game?>) {
+        val game = data.value as? Game.Starting ?: return
 
-        val member = interaction.user as? Member ?: run {
-            interaction.respondEphemeral {
-                content = "Must be a user"
-            }
-            return
-        }
+        val member = member() ?: return
 
         when (interaction.componentId) {
             "create-team" -> {
-                val game = data.value as? Game.Starting ?: return
                 game.removeMember(member)
                 game.teams.add(mutableListOf(member))
             }
             "join-team" -> {
-                val game = data.value as? Game.Starting ?: return
-                if (this !is SelectMenuInteractionCreateEvent) TODO()
+                this as SelectMenuInteractionCreateEvent
                 val team = game.teams[interaction.values.first().toInt()]
                 game.removeMember(member, prune = false)
                 team.add(member)
                 game.removeEmpty()
             }
-            "leave" -> {
-                val game = data.value as? Game.Starting ?: return
-                game.removeMember(member)
-            }
+            "leave" -> game.removeMember(member)
             "set-question" -> {
                 interaction.modal("Set Question", "set-question") {
                     actionRow {
@@ -115,7 +106,6 @@ object StartMessage : DynamicMessage<Game?> {
                 return
             }
             "start" -> {
-                val game = data.value as? Game.Starting ?: return
                 update(data, disable = true)
                 data.value = game.toRunning()
                 PlayMessage.send(data)
@@ -135,7 +125,7 @@ object StartMessage : DynamicMessage<Game?> {
 
     override suspend fun ModalSubmitInteractionCreateEvent.onModal(data: Ref<Game?>) {
         if (interaction.modalId != "set-question") return
-        val game = data.value as? Game.Starting ?: TODO()
+        val game = data.value as? Game.Starting ?: return
         game.question = interaction.textInputs["question"]!!.value!!
         game.oneMeaning = interaction.textInputs["1"]!!.value.let { if (it == null || it.isEmpty()) "Least" else it }
         game.hundredMeaning = interaction.textInputs["100"]!!.value.let { if (it == null || it.isEmpty()) "Most" else it }

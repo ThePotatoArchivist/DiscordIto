@@ -2,6 +2,7 @@ package archives.tater.discordito.messages
 
 import archives.tater.discordito.COLORS
 import archives.tater.discordito.DynamicMessage
+import archives.tater.discordito.DynamicMessage.Companion.invalid
 import archives.tater.discordito.Game
 import archives.tater.discordito.Ref
 import dev.kord.common.entity.ButtonStyle
@@ -18,7 +19,7 @@ object RevealMessage : DynamicMessage<Game?> {
         data: Game?,
         disable: Boolean
     ) {
-        if (data !is Game.Reveal) TODO()
+        if (data !is Game.Reveal) return invalid()
 
         embed {
             title = data.question
@@ -56,10 +57,11 @@ object RevealMessage : DynamicMessage<Game?> {
     }
 
     override suspend fun ComponentInteractionCreateEvent.onComponent(data: Ref<Game?>) {
+        val game = data.value as? Game.Reveal ?: return
+
         when (interaction.componentId) {
             "reveal-entry" -> {
-                val game = data.value as? Game.Reveal ?: TODO()
-                if (this !is SelectMenuInteractionCreateEvent) TODO()
+                this as SelectMenuInteractionCreateEvent
                 for (index in interaction.values)
                     game.revealed.add(game.entries[index.toInt()])
                 interaction.deferPublicMessageUpdate()
@@ -67,7 +69,6 @@ object RevealMessage : DynamicMessage<Game?> {
             }
             "replay" -> {
                 update(data, disable = true)
-                val game = data.value as? Game.Reveal ?: TODO()
                 data.value = game.toStarting()
                 StartMessage.send(data)
             }
