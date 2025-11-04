@@ -40,7 +40,7 @@ object PlayMessage : DynamicMessage<Game?> {
                 label = "See Number"
                 disabled = disable
             }
-            interactionButton(ButtonStyle.Secondary, "set-word") {
+            interactionButton(ButtonStyle.Primary, "set-word") {
                 label = "Set Word"
                 disabled = disable
             }
@@ -71,7 +71,7 @@ object PlayMessage : DynamicMessage<Game?> {
             }
         }
         actionRow {
-            interactionButton(ButtonStyle.Primary, "reveal") {
+            interactionButton(ButtonStyle.Success, "reveal") {
                 label = "Reveal"
                 disabled = disable || data.entries.size < data.teams.size
             }

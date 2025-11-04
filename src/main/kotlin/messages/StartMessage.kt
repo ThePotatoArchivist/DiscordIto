@@ -29,11 +29,11 @@ object StartMessage : DynamicMessage<Game?> {
         }
 
         actionRow {
-            interactionButton(ButtonStyle.Secondary, "create-team") {
+            interactionButton(ButtonStyle.Primary, "create-team") {
                 label = "Create Team"
                 disabled = disable || data.teams.size >= COLORS.size
             }
-            interactionButton(ButtonStyle.Danger, "leave") {
+            interactionButton(ButtonStyle.Secondary, "leave") {
                 label = "Leave"
                 disabled = disable
             }
@@ -57,7 +57,7 @@ object StartMessage : DynamicMessage<Game?> {
                 label = "Set Question"
                 disabled = disable
             }
-            interactionButton(ButtonStyle.Primary, "start") {
+            interactionButton(ButtonStyle.Success, "start") {
                 label = "Start"
                 disabled = disable || data.question == null || data.teams.size < 2
             }
