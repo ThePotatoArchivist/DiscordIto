@@ -45,34 +45,35 @@ object PlayMessage : DynamicMessage<Game?> {
                 disabled = disable
             }
         }
-        if (data.entries.isNotEmpty()) {
-            actionRow {
-                stringSelect("selected-entry") {
-                    placeholder = "Rearrange"
+        actionRow {
+            stringSelect("selected-entry") {
+                placeholder = "Rearrange"
+                if (data.entries.isEmpty())
+                    option("N/A", "na")
+                else
                     data.entries.forEachIndexed { index, (team, word) ->
                         option(word, index.toString()) {
                             emoji = DiscordPartialEmoji(name = COLORS[data.teams.indexOf(team)])
                             default = index == data.selected
                         }
                     }
-                    disabled = disable
-                }
+                disabled = disable || data.entries.isEmpty()
             }
-            actionRow {
-                interactionButton(ButtonStyle.Secondary, "entry-up") {
-                    emoji = DiscordPartialEmoji(name = "\u2b06\ufe0f")
-                    disabled = disable || data.selected == null
-                }
-                interactionButton(ButtonStyle.Secondary, "entry-down") {
-                    emoji = DiscordPartialEmoji(name = "\u2b07\ufe0f")
-                    disabled = disable || data.selected == null
-                }
+        }
+        actionRow {
+            interactionButton(ButtonStyle.Secondary, "entry-up") {
+                emoji = DiscordPartialEmoji(name = "\u2b06\ufe0f")
+                disabled = disable || data.selected == null
             }
-            actionRow {
-                interactionButton(ButtonStyle.Primary, "reveal") {
-                    label = "Reveal"
-                    disabled = disable || data.entries.size < data.teams.size
-                }
+            interactionButton(ButtonStyle.Secondary, "entry-down") {
+                emoji = DiscordPartialEmoji(name = "\u2b07\ufe0f")
+                disabled = disable || data.selected == null
+            }
+        }
+        actionRow {
+            interactionButton(ButtonStyle.Primary, "reveal") {
+                label = "Reveal"
+                disabled = disable || data.entries.size < data.teams.size
             }
         }
     }

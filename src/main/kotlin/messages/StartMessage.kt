@@ -38,15 +38,18 @@ object StartMessage : DynamicMessage<Game?> {
                 disabled = disable
             }
         }
-        if (data.teams.isNotEmpty()) actionRow {
+        actionRow {
             stringSelect("join-team") {
-                data.teams.forEachIndexed { index, team ->
-                    option(team.joinToString { it.effectiveName }, index.toString()) {
-                        emoji = DiscordPartialEmoji(name = COLORS[index])
+                if (data.teams.isEmpty())
+                    option("N/A", "na")
+                else
+                    data.teams.forEachIndexed { index, team ->
+                        option(team.joinToString { it.effectiveName }, index.toString()) {
+                            emoji = DiscordPartialEmoji(name = COLORS[index])
+                        }
                     }
-                }
                 placeholder = "Join Team"
-                disabled = disable
+                disabled = disable || data.teams.isEmpty()
             }
         }
         actionRow {
