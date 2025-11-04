@@ -1,0 +1,49 @@
+<component name="ProjectCodeStyleConfiguration">
+  <code_scheme name="Project" version="173">
+    <JavaCodeStyleSettings>
+      <option name="INSERT_INNER_CLASS_IMPORTS" value="true" />
+      <option name="IMPORT_LAYOUT_TABLE">
+        <value>
+          <package name="" withSubpackages="true" static="false" module="true" />
+          <package name="archives.tater" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="net.fabricmc" withSubpackages="true" static="false" />
+          <package name="com.llamalad7" withSubpackages="true" static="false" />
+          <package name="org.spongepowered" withSubpackages="true" static="false" />
+          <package name="org.objectweb" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="com.mojang" withSubpackages="true" static="false" />
+          <package name="net.minecraft" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="javax" withSubpackages="true" static="false" />
+          <package name="java" withSubpackages="true" static="false" />
+          <emptyLine />
+          <package name="" withSubpackages="true" static="true" />
+        </value>
+      </option>
+    </JavaCodeStyleSettings>
+    <JetCodeStyleSettings>
+      <option name="PACKAGES_IMPORT_LAYOUT">
+        <value>
+          <package name="archives.tater" alias="false" withSubpackages="true" />
+          <package name="net.fabricmc" alias="false" withSubpackages="true" />
+          <package name="com.llamalad7" alias="false" withSubpackages="true" />
+          <package name="org.spongepowered" alias="false" withSubpackages="true" />
+          <package name="com.mojang" alias="false" withSubpackages="true" />
+          <package name="net.minecraft" alias="false" withSubpackages="true" />
+          <package name="" alias="false" withSubpackages="true" />
+          <package name="java" alias="false" withSubpackages="true" />
+          <package name="javax" alias="false" withSubpackages="true" />
+          <package name="kotlin" alias="false" withSubpackages="true" />
+          <package name="" alias="true" withSubpackages="true" />
+        </value>
+      </option>
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+    </JetCodeStyleSettings>
+    <codeStyleSettings language="kotlin">
+      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
+    </codeStyleSettings>
+  </code_scheme>
+</component>
