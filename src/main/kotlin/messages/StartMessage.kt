@@ -91,18 +91,21 @@ object StartMessage : DynamicMessage<Game?> {
                     actionRow {
                         textInput(TextInputStyle.Short, "question", "Question") {
                             required = true
+                            value = game.question
                         }
                     }
                     actionRow {
                         textInput(TextInputStyle.Short, "1", "1") {
                             placeholder = "Least"
                             required = false
+                            value = game.oneMeaning
                         }
                     }
                     actionRow {
                         textInput(TextInputStyle.Short, "100", "100") {
                             placeholder = "Most"
                             required = false
+                            value = game.hundredMeaning
                         }
                     }
                 }
