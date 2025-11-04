@@ -2,6 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "2.2.20"
+    id("application")
 }
 
 group = "archives.tater.discordito"
@@ -28,4 +29,8 @@ val compileKotlin: KotlinCompile by tasks
 
 compileKotlin.compilerOptions {
     freeCompilerArgs.set(listOf("-Xcontext-parameters"))
+}
+
+application {
+    mainClass = "archives.tater.discordito.Main"
 }
