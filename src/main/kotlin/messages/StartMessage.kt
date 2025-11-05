@@ -23,7 +23,7 @@ object StartMessage : DynamicMessage<Game?> {
         if (data !is Game.Starting) return invalid()
 
         embed {
-            title = "Ito"
+            title = "New Game"
             description = data.teams.withIndex().joinToString("\n") { (index, team) -> "${COLORS[index]} ${team.joinToString(" ") { it.mention }}" }
             field("Question") { data.question ?: "Unset" }
         }

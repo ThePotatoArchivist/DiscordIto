@@ -27,6 +27,7 @@ sealed interface Game {
         val teams: List<Team>,
         val entries: List<Entry>,
         var revealed: MutableSet<Entry> = mutableSetOf(),
+        var complete: Boolean = false,
     ) : Game {
         fun toStarting() = Starting(
             teams = teams.map { it.members.toMutableList() }.toMutableList(),

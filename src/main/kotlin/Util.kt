@@ -27,3 +27,6 @@ fun <K, V: Any> MutableMap<K, V>.getRef(key: K) = Ref({
 }
 
 fun <V> KMutableProperty0<V>.toRef() = Ref({ get() }, { set(it) })
+
+fun <T : Comparable<T>> List<T>.isSorted() = zipWithNext().all { (prev, next) -> prev < next }
+

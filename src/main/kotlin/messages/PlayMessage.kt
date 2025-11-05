@@ -28,11 +28,13 @@ object PlayMessage : DynamicMessage<Game?> {
 
         embed {
             title = data.question
-            description = data.entries.joinToString("\n") { (team, word) ->
-                "${COLORS[data.teams.indexOf(team)]} $word"
-            }
-            field("0", inline = true) { data.oneMeaning }
-            field("100", inline = true) { data.hundredMeaning }
+            description = """
+                |**1** ${data.oneMeaning}
+                |${data.entries.joinToString("\n") { (team, word) ->
+                    "> ${COLORS[data.teams.indexOf(team)]} $word"
+                }}
+                |**100** ${data.hundredMeaning}
+            """.trimMargin()
         }
 
         actionRow {

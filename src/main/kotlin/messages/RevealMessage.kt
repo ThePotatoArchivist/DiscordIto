@@ -1,10 +1,7 @@
 package archives.tater.discordito.messages
 
-import archives.tater.discordito.COLORS
-import archives.tater.discordito.DynamicMessage
+import archives.tater.discordito.*
 import archives.tater.discordito.DynamicMessage.Companion.invalid
-import archives.tater.discordito.Game
-import archives.tater.discordito.Ref
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
@@ -13,6 +10,7 @@ import dev.kord.rest.builder.component.option
 import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.actionRow
 import dev.kord.rest.builder.message.embed
+import kotlinx.coroutines.delay
 
 object RevealMessage : DynamicMessage<Game?> {
     override fun MessageBuilder.init(
@@ -29,8 +27,12 @@ object RevealMessage : DynamicMessage<Game?> {
             }
         }
 
+        if (data.complete) embed {
+            title = if (data.entries.map { it.team.number }.isSorted()) "You won!" else "You lost!"
+        }
+
         actionRow {
-            if (data.teams.size == data.revealed.size) {
+            if (data.complete) {
                 interactionButton(ButtonStyle.Secondary, "replay") {
                     label = "Play Again"
                     disabled = disable
@@ -42,7 +44,7 @@ object RevealMessage : DynamicMessage<Game?> {
             } else {
                 stringSelect("reveal-entry") {
                     placeholder = "Reveal"
-                    disabled = disable
+                    disabled = disable || data.entries.size == data.revealed.size
                     allowedValues = 0..data.entries.size
 
                     data.entries.forEachIndexed { index, entry ->
@@ -66,6 +68,11 @@ object RevealMessage : DynamicMessage<Game?> {
                     game.revealed.add(game.entries[index.toInt()])
                 interaction.deferPublicMessageUpdate()
                 update(data)
+                if (game.entries.size == game.revealed.size) {
+                    delay(5000)
+                    game.complete = true
+                    update(data)
+                }
             }
             "replay" -> {
                 update(data, disable = true)

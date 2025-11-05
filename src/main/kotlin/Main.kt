@@ -8,6 +8,7 @@ import archives.tater.discordito.messages.StartMessage
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.respondEphemeral
+import dev.kord.core.event.gateway.ReadyEvent
 import dev.kord.core.event.interaction.ChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.interaction.InteractionCreateEvent
 import dev.kord.core.on
@@ -48,6 +49,12 @@ suspend fun main() {
         StartMessage.register(getData)
         PlayMessage.register(getData)
         RevealMessage.register(getData)
+
+        on<ReadyEvent> {
+            editPresence {
+                playing("/start")
+            }
+        }
 
         login {
             intents += Intent.GuildMessages + Intent.Guilds
