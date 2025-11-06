@@ -4,6 +4,7 @@ import archives.tater.discordito.DynamicMessage
 import archives.tater.discordito.DynamicMessage.Companion.invalid
 import archives.tater.discordito.DynamicMessage.Companion.member
 import archives.tater.discordito.Game
+import archives.tater.discordito.MAIN_EMBED_COLOR
 import archives.tater.discordito.Ref
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
@@ -28,6 +29,7 @@ object PlayMessage : DynamicMessage<Game?> {
 
         embed {
             title = data.question
+            color = MAIN_EMBED_COLOR
             description = """
                 |**1** ${data.oneMeaning}
                 |${data.entries.joinToString("\n") { (team, word) ->
@@ -160,10 +162,7 @@ object PlayMessage : DynamicMessage<Game?> {
         val word = interaction.textInputs["word"]?.value!!
         game.entries.add(Game.Entry(team, word))
         interaction.respondPublic {
-            embed {
-                title = "Word Set"
-                description = "**$team**: $word"
-            }
+            content = "**$team**: $word"
         }
         update(data)
     }

@@ -1,11 +1,8 @@
 package archives.tater.discordito.messages
 
-import archives.tater.discordito.COLORS
-import archives.tater.discordito.DynamicMessage
+import archives.tater.discordito.*
 import archives.tater.discordito.DynamicMessage.Companion.invalid
 import archives.tater.discordito.DynamicMessage.Companion.member
-import archives.tater.discordito.Game
-import archives.tater.discordito.Ref
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.TextInputStyle
@@ -24,6 +21,7 @@ object StartMessage : DynamicMessage<Game?> {
 
         embed {
             title = "New Game"
+            color = MAIN_EMBED_COLOR
             description = data.teams.withIndex().joinToString("\n") { (index, team) -> "${COLORS[index]} ${team.joinToString(" ") { it.mention }}" }
             field("Question") { data.question ?: "Unset" }
         }
@@ -59,7 +57,7 @@ object StartMessage : DynamicMessage<Game?> {
             }
             interactionButton(ButtonStyle.Success, "start") {
                 label = "Start"
-                disabled = disable || data.question == null || data.teams.size < 2
+                disabled = disable || data.question == null || data.teams.size < 1
             }
             interactionButton(ButtonStyle.Danger, "cancel") {
                 label = "Cancel"

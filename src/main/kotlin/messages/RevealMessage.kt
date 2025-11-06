@@ -1,12 +1,10 @@
 package archives.tater.discordito.messages
 
-import archives.tater.discordito.DynamicMessage
+import archives.tater.discordito.*
 import archives.tater.discordito.DynamicMessage.Companion.invalid
-import archives.tater.discordito.Game
-import archives.tater.discordito.Ref
-import archives.tater.discordito.isSorted
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
+import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
 import dev.kord.rest.builder.component.option
@@ -24,6 +22,7 @@ object RevealMessage : DynamicMessage<Game?> {
 
         embed {
             title = data.question
+            color = MAIN_EMBED_COLOR
             description = data.entries.joinToString("\n") { entry ->
                 val (team, word) = entry
                 "${team.colorEmoji} `${if (entry in data.revealed) team.number else "?"}` $word"
@@ -67,9 +66,11 @@ object RevealMessage : DynamicMessage<Game?> {
         when (interaction.componentId) {
             "reveal-entry" -> {
                 this as SelectMenuInteractionCreateEvent
-                for (index in interaction.values)
-                    game.revealed.add(game.entries[index.toInt()])
-                interaction.deferPublicMessageUpdate()
+                val revealed = interaction.values.map { game.entries[it.toInt()] }
+                game.revealed.addAll(revealed)
+                interaction.respondPublic {
+                    content = revealed.joinToString("\n") { (team, word) -> "${team.colorEmoji} `${team.number}` $word" }
+                }
                 update(data)
                 if (game.entries.size == game.revealed.size) {
                     delay(5000)
