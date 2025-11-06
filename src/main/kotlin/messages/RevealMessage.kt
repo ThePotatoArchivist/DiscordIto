@@ -2,6 +2,7 @@ package archives.tater.discordito.messages
 
 import archives.tater.discordito.*
 import archives.tater.discordito.DynamicMessage.Companion.invalid
+import dev.kord.common.Color
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.core.behavior.interaction.respondPublic
@@ -30,7 +31,13 @@ object RevealMessage : DynamicMessage<Game?> {
         }
 
         if (data.complete) embed {
-            title = if (data.entries.map { it.team.number }.isSorted()) "You won!" else "You lost!"
+            if (data.entries.map { it.team.number }.isSorted()) {
+                title = "You won!"
+                color = Color(0x33CD5B)
+            } else {
+                title = "You lost!"
+                color = Color(0xCD3354)
+            }
         }
 
         actionRow {
