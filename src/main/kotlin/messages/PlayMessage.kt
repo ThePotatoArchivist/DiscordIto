@@ -1,6 +1,5 @@
 package archives.tater.discordito.messages
 
-import archives.tater.discordito.COLORS
 import archives.tater.discordito.DynamicMessage
 import archives.tater.discordito.DynamicMessage.Companion.invalid
 import archives.tater.discordito.DynamicMessage.Companion.member
@@ -11,6 +10,7 @@ import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.common.entity.TextInputStyle
 import dev.kord.core.behavior.interaction.modal
 import dev.kord.core.behavior.interaction.respondEphemeral
+import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
 import dev.kord.core.event.interaction.ModalSubmitInteractionCreateEvent
 import dev.kord.core.event.interaction.SelectMenuInteractionCreateEvent
@@ -31,7 +31,7 @@ object PlayMessage : DynamicMessage<Game?> {
             description = """
                 |**1** ${data.oneMeaning}
                 |${data.entries.joinToString("\n") { (team, word) ->
-                    "> ${COLORS[data.teams.indexOf(team)]} $word"
+                    "> ${team.colorEmoji} $word"
                 }}
                 |**100** ${data.hundredMeaning}
             """.trimMargin()
@@ -55,7 +55,7 @@ object PlayMessage : DynamicMessage<Game?> {
                 else
                     data.entries.forEachIndexed { index, (team, word) ->
                         option(word, index.toString()) {
-                            emoji = DiscordPartialEmoji(name = COLORS[data.teams.indexOf(team)])
+                            emoji = DiscordPartialEmoji(name = team.colorEmoji)
                             default = index == data.selected
                         }
                     }
@@ -157,8 +157,14 @@ object PlayMessage : DynamicMessage<Game?> {
             return
         }
         game.entries.removeIf { it.team == team }
-        game.entries.add(Game.Entry(team, interaction.textInputs["word"]?.value!!))
-        interaction.deferPublicMessageUpdate()
+        val word = interaction.textInputs["word"]?.value!!
+        game.entries.add(Game.Entry(team, word))
+        interaction.respondPublic {
+            embed {
+                title = "Word Set"
+                description = "**$team**: $word"
+            }
+        }
         update(data)
     }
 }

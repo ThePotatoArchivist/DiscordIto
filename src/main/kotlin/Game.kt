@@ -4,7 +4,11 @@ import dev.kord.core.entity.Member
 import kotlin.random.Random
 
 sealed interface Game {
-    data class Team(val members: List<Member>, val number: Int)
+    data class Team(val members: List<Member>, val number: Int, val colorEmoji: String) {
+        override fun toString(): String {
+            return "$colorEmoji ${members.joinToString { it.effectiveName }}"
+        }
+    }
     data class Entry(val team: Team, val word: String)
 
     data class Running(
@@ -44,7 +48,7 @@ sealed interface Game {
             question ?: throw AssertionError("Question empty"),
             oneMeaning ?: throw AssertionError("1 meaning empty"),
             hundredMeaning ?: throw AssertionError("100 meaning empty"),
-            teams.map { Team(it, Random.nextInt(1, 100)) },
+            teams.mapIndexed { index, members -> Team(members, Random.nextInt(1, 100), COLORS[index]) },
         )
 
         fun removeMember(member: Member, prune: Boolean = true) {

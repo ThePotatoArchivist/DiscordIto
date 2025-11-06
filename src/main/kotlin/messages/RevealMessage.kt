@@ -1,7 +1,10 @@
 package archives.tater.discordito.messages
 
-import archives.tater.discordito.*
+import archives.tater.discordito.DynamicMessage
 import archives.tater.discordito.DynamicMessage.Companion.invalid
+import archives.tater.discordito.Game
+import archives.tater.discordito.Ref
+import archives.tater.discordito.isSorted
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.common.entity.DiscordPartialEmoji
 import dev.kord.core.event.interaction.ComponentInteractionCreateEvent
@@ -23,7 +26,7 @@ object RevealMessage : DynamicMessage<Game?> {
             title = data.question
             description = data.entries.joinToString("\n") { entry ->
                 val (team, word) = entry
-                "${COLORS[data.teams.indexOf(team)]} `${if (entry in data.revealed) team.number else "?"}` $word"
+                "${team.colorEmoji} `${if (entry in data.revealed) team.number else "?"}` $word"
             }
         }
 
@@ -50,7 +53,7 @@ object RevealMessage : DynamicMessage<Game?> {
                     data.entries.forEachIndexed { index, entry ->
                         val (team, word) = entry
                         option(word, index.toString()) {
-                            emoji = DiscordPartialEmoji(name = COLORS[data.teams.indexOf(team)])
+                            emoji = DiscordPartialEmoji(name = team.colorEmoji)
                         }
                     }
                 }
