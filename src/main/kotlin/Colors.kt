@@ -13,5 +13,5 @@ val COLORS = listOf(
     "\u2B1C", // White
 )
 
-val MAIN_EMBED_COLOR = Color(0xFF8CB5)
+val MAIN_EMBED_COLOR = Color(0xFFFFFF)
 
