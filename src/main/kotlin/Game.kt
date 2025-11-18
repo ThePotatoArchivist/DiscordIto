@@ -1,12 +1,15 @@
 package archives.tater.discordito
 
 import dev.kord.core.entity.Member
+import kotlinx.coroutines.flow.emptyFlow
 import kotlin.random.Random
 
 sealed interface Game {
     data class Team(val members: List<Member>, val number: Int, val colorEmoji: String) {
+        val memberNames get() = members.joinToString { it.effectiveName }
+
         override fun toString(): String {
-            return "$colorEmoji ${members.joinToString { it.effectiveName }}"
+            return "$colorEmoji $memberNames"
         }
     }
     data class Entry(val team: Team, val word: String)

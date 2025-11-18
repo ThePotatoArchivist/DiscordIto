@@ -33,7 +33,7 @@ object PlayMessage : DynamicMessage<Game?> {
             description = """
                 |**1** ${data.oneMeaning}
                 |${data.entries.joinToString("\n") { (team, word) ->
-                    "> ${team.colorEmoji} $word"
+                    "> ${team.colorEmoji} **$word** (${team.memberNames})"
                 }}
                 |**100** ${data.hundredMeaning}
             """.trimMargin()
@@ -162,7 +162,7 @@ object PlayMessage : DynamicMessage<Game?> {
         val word = interaction.textInputs["word"]?.value!!
         game.entries.add(Game.Entry(team, word))
         interaction.respondPublic {
-            content = "**$team**: $word"
+            content = "**${team.colorEmoji} ${member.effectiveName}**: $word"
         }
         update(data)
     }

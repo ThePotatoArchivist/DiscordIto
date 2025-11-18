@@ -26,7 +26,7 @@ object RevealMessage : DynamicMessage<Game?> {
             color = MAIN_EMBED_COLOR
             description = data.entries.joinToString("\n") { entry ->
                 val (team, word) = entry
-                "${team.colorEmoji} `${if (entry in data.revealed) team.number else "?"}` $word"
+                "${team.colorEmoji} `${if (entry in data.revealed) team.number else "?"}` **$word** (${team.memberNames})"
             }
         }
 
@@ -76,7 +76,7 @@ object RevealMessage : DynamicMessage<Game?> {
                 val revealed = interaction.values.map { game.entries[it.toInt()] }
                 game.revealed.addAll(revealed)
                 interaction.respondPublic {
-                    content = revealed.joinToString("\n") { (team, word) -> "${team.colorEmoji} `${team.number}` $word" }
+                    content = revealed.joinToString("\n") { (team, word) -> "${team.colorEmoji} `${team.number}` **$word** (${team.memberNames})" }
                 }
                 update(data)
                 if (game.entries.size == game.revealed.size) {
